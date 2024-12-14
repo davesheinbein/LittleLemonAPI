@@ -9,11 +9,15 @@
 		<title>Little Lemon Home</title>
 	</head>
 	<body>
+		{% block title %}Little Lemon Home{% endblock %} {%
+		block content %}
 		<h1>Welcome to Little Lemon API</h1>
 		<p>Please navigate to one of the following paths:</p>
 		<ul>
 			<li><a href="/admin/">Admin</a></li>
+			<li><a href="/admin/logout/">Admin Logout</a></li>
 			<li><a href="/api/">API Root</a></li>
+			<li><a href="/api/logout/">API Logout</a></li>
 			<li><a href="/api/menu-items/">Menu Items</a></li>
 			<li>
 				<a href="/api/menu-items/1/"

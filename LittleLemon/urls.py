@@ -21,7 +21,9 @@ from LittleLemonApp import views
 urlpatterns = [
     path('', views.home, name='home'),
     path('admin/', admin.site.urls),
+    path('admin/logout/', views.admin_logout, name='admin-logout'),
     path('api/', views.api_root, name='api-root'),
+    path('api/logout/', views.api_logout, name='api-logout'),
     path('api/', include('LittleLemonApp.urls')),
     path('auth/', include('djoser.urls')),
     path('auth/', include('djoser.urls.authtoken')),
