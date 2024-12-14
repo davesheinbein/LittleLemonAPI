@@ -4,6 +4,7 @@ from . import views
 
 router = DefaultRouter()
 router.register(r'menu-items', views.MenuItemViewSet, basename='menuitem')
+router.register(r'categories', views.CategoryViewSet, basename='category')
 
 urlpatterns = [
     path('', include(router.urls)),
@@ -13,4 +14,6 @@ urlpatterns = [
     path('cart-items/<int:pk>/', views.CartItemDetailView.as_view(), name='cartitem-detail'),
     path('orders/', views.OrderListView.as_view(), name='order-list'),
     path('orders/<int:pk>/', views.OrderDetailView.as_view(), name='order-detail'),
+    path('groups/<str:group_name>/users', views.add_user_to_group, name='add-user-to-group'),
+    path('groups/<str:group_name>/users', views.list_group_users, name='list-group-users'),
 ]

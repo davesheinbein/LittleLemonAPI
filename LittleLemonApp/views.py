@@ -12,7 +12,7 @@ from rest_framework import generics, permissions, filters
 from .models import MenuItem, CartItem, Order
 from .serializers import MenuItemSerializer, UserSerializer, CartItemSerializer, OrderSerializer
 from rest_framework.reverse import reverse
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.viewsets import GenericViewSet
 from rest_framework.decorators import action
@@ -143,6 +143,35 @@ class OrderListView(generics.ListCreateAPIView):
 class OrderDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
+    permission_classes = [IsAdminOrReadOnly]
+
+@api_view(['POST'])
+@permission_classes([permissions.IsAdminUser])
+def add_user_to_group(request, group_name):
+    try:
+        group = Group.objects.get(name=group_name)
+        user = User.objects.get(username=request.data['username'])
+        user.groups.add(group)
+        return Response({'status': 'user added to group'}, status=status.HTTP_200_OK)
+    except Group.DoesNotExist:
+        return Response({'error': 'Group not found'}, status=status.HTTP_404_NOT_FOUND)
+    except User.DoesNotExist:
+        return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+
+@api_view(['GET'])
+@permission_classes([permissions.IsAdminUser])
+def list_group_users(request, group_name):
+    try:
+        group = Group.objects.get(name=group_name)
+        users = group.user_set.all()
+        serializer = UserSerializer(users, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    except Group.DoesNotExist:
+        return Response({'error': 'Group not found'}, status=status.HTTP_404_NOT_FOUND)
+
+class CategoryViewSet(viewsets.ModelViewSet):
+    queryset = MenuItem.objects.values('category').distinct()
+    serializer_class = MenuItemSerializer
     permission_classes = [IsAdminOrReadOnly]
 
 def admin_logout(request):
